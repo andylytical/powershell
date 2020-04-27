@@ -54,11 +54,21 @@
 <tr>
     <td>New-Item</td> <td>ni</td>
 </tr>
+<tr>
+    <td>echo</td><td>echo<br/>
+                     write-host<br/>
+                     write-verbose<br/>
+                     wtire-debug<br/>
+                 </td>
+</tr>
 </table>
 
 # Environment Variables
 ### List
 - `ls env:`
+- `ls env:U*`
+### Echo / Print
+- `echo $env:userprofile`
 ### Create / Modify
 - Per Session
   - `$env:myvar = "abc123"`
