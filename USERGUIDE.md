@@ -55,10 +55,13 @@
     <td>New-Item</td> <td>ni</td>
 </tr>
 <tr>
+    <td>Get-Member</td> <td>gm</td>
+</tr>
+<tr>
     <td>echo</td><td>echo<br/>
                      write-host<br/>
                      write-verbose<br/>
-                     wtire-debug<br/>
+                     write-debug<br/>
                  </td>
 </tr>
 </table>
@@ -127,6 +130,15 @@ function vbox { vagrant box @Args }
 - `man <cmdlet>`
 - `<cmdlet> -?`
 - `get-help [-detailed -full -parameter <param-name> -examples]`
+
+### Get the Type of something
+- `GetType()`
+- Example: `(get-date).getType()`
+
+### Get the properties of something
+- `Get-Member`
+- Alias: `gm`
+- Example: `( get-date ).DayOfWeek | gm -f`
 
 # Debugging
 ```Set-PSDebug -Trace 1```
