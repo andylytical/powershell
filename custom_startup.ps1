@@ -28,6 +28,8 @@ function IsBusinessHours {
   $now = Get-Date
   $dayOfWeek = $now.DayOfWeek
   $hourOfDay = $now.Hour
+  write-host "DayOfWeek='$dayOfWeek'"
+  write-host "HourOfDay='$hourOfDay'"
 
   if ($dayOfWeek.ToString().StartsWith("S")) {
     return $false
@@ -37,11 +39,12 @@ function IsBusinessHours {
     return $false
   }
 
+  write-host "IsBusinessHours = True"
   return $true
 }
 
 # Run all architecture agnostic progs
-gci "$STARTUP_DIR/*" -Filter *.lnk -Exclude 00* | foreach-object {
+gci "$STARTUP_DIR\*" -Filter *.lnk -Exclude 00* | foreach-object {
   Invoke-ShortcutIfExists $_
 }
 
@@ -53,14 +56,13 @@ gci "$STARTUP_DIR/*" -Filter *.lnk -Exclude 00* | foreach-object {
 $arch = (Get-WmiObject Win32_OperatingSystem).OSArchitecture.Substring(0,2)
 $archdir = "$STARTUP_DIR\$arch"
 gci "$archdir" -Filter *.lnk | foreach { 
-  # write-host "RAW: $_"
-  # write-host "WITHDIR: $archdir\$_"
   Invoke-ShortcutIfExists $archdir\$_
 }
 
 # Run work specific progs
 if ( IsBusinessHours ) {
-  gci "$STARTUP_DIR/work/*" -Filter *.lnk -Exclude 00* | foreach-object {
+  write-host "Looking for work shortcuts"
+  gci "$STARTUP_DIR\Work\*" -Filter *.lnk -Exclude 00* | foreach-object {
     Invoke-ShortcutIfExists $_
   }
 }
