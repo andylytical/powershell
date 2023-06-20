@@ -1,13 +1,18 @@
 # Windows Powershell Profile
 
 # Installation
+
+## Enable scripts
 - Powershell (as Administrator)
   - `Set-ExecutionPolicy RemoteSigned`
 - "Windows Powershell" (as Administrator) #see Notes below for more details
   - `Set-ExecutionPolicy RemoteSigned`
+
+## Install files
 - Powershell (as normal user)
-  - `get-item $profile | rename-item -newname { $_.Name -replace 'ps1',(Get-Date -Format yyyyMMdd-HHmmss) } -whatif`
-  - `Invoke-WebRequest -outfile $profile https://raw.githubusercontent.com/andylytical/powershell/master/Microsoft.PowerShell_profile.ps1`
+  - `Invoke-WebRequest -outfile "${env:USERPROFILE}\setup.ps1" -Uri https://raw.githubusercontent.com/andylytical/powershell/main/setup.ps1`
+  - `& "${env:USERPROFILE}\setup.ps1"`
+  - `rm "${env:USERPROFILE}\setup.ps1"`
 
 # Powershell Tips / Tricks
 - [USERGUIDE.md](USERGUIDE.md)

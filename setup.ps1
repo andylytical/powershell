@@ -1,18 +1,61 @@
-$DATE = Get-Date -Format yyyyMMdd-HHmmss
+$DATE = Get-Date -UFormat '%Y%m%d_%H%M%S'
+$URL_BASE = 'https://raw.githubusercontent.com/andylytical/powershell/main'
 
-# Move old profile aside
-get-item $profile | rename-item -newname { $_.Name -replace 'ps1',$curDateTime }
+function Backup-File {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$filepath
+  )
 
-# Install new profile
-Invoke-WebRequest -outfile $profile https://raw.githubusercontent.com/andylytical/powershell/main/Microsoft.PowerShell_profile.ps1
+  if ( Test-Path -Path $filepath -PathType Leaf ) {
+    get-item $filepath | rename-item -newname { $_.Name + $DATE }
+  }
+}
 
-## Replace all files in PS1.d
-#$psub_dir = Join-Path -Path (get-item $profile).Directory.FullName -ChildPath 'PS1.d'
-##echo $psub_dir
-#Remove-Item -Path $psub_dir -Recurse -Force -WhatIf
-#
-## Install custom items in PS1.d
-#mkdir $psub_dir
-#### TODO - how to install all remote items here?
-##          (maybe just git clone, and move)
+function Install-FileFromURL {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$url,
+
+    [Parameter(Mandatory = $true)]
+    [string]$target_dir,
+
+    [Parameter()]
+    [string]$target_filename = ''
+  )
+
+  if ( $target_filename.Length -lt 1 ) {
+    $target_filename = $url.split('/')[-1]
+  }
+
+  $outfile = [IO.Path]::Combine( $target_dir, $target_filename )
+  Backup-File $outfile
+  Invoke-WebRequest -OutFile $outfile $url
+}
+
+# Dictionary of filename -> target install dir
+$files = @{
+  'custom_startup.ps1' = [IO.Path]::Combine( $env:OneDrive, 'Startup' )
+  'Microsoft.PowerShell_profile.ps1' = [IO.Path]::Combine( $env:USERPROFILE, 'Documents', 'WindowsPowerShell' )
+}
+
+$files.GetEnumerator() | ForEach-Object {
+  $fn = $_.Key
+  $target_dir = $_.Value
+  Install-FileFromURL `
+    -url "${URL_BASE}/${fn}" `
+    -target_dir $target_dir
+}
+
+# # custom_startup
+# $fn = 'custom_startup.ps1'
+# Install-FileFromURL `
+#   -url "${URL_BASE}/${fn}" `
+#   -target_dir ( [IO.Path]::Combine( $env:OneDrive, 'Startup' ) )
+
+# # Powershell profile
+# $fn = (get-item $profile).Name
+# Install-FileFromURL `
+#   -url "${URL_BASE}/${fn}" `
+#   -target_dir (get-item $profile).Directory.FullName
 
