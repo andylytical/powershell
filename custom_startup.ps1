@@ -2,7 +2,7 @@
 # SCRIPT VARIABLES
 ###
 
-$STARTUP_DIR = [IO.Path]::Combine($env:USERPROFILE, 'Onedrive', 'Startup' )
+$STARTUP_DIR = [IO.Path]::Combine($env:OneDrive, 'Startup' )
 $DATETIME_STR = Get-Date -UFormat '%Y%m%d_%H%M%S_%Z'
 $LOGFILE = "${DATETIME_STR}_${env:COMPUTERNAME}.txt"
 $LOGPATH = [IO.Path]::Combine($STARTUP_DIR, 'logs', $LOGFILE)
